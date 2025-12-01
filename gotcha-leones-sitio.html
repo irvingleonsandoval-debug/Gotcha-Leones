@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Gotcha Leones | Reservaciones</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+  :root{
+    --bg-dark:#050816;
+    --bg-card:#0f172a;
+    --accent:#f97316;
+    --accent-soft:#fed7aa;
+    --accent-2:#22c55e;
+    --text:#f9fafb;
+    --muted:#cbd5f5;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:radial-gradient(circle at top,#1e293b 0,#020617 55%);
+    color:var(--text);
+  }
+  .page{
+    max-width:1100px;
+    margin:0 auto;
+    padding:18px 14px 40px;
+    position:relative;
+  }
+  /* manchas de pintura */
+  .splat{
+    position:absolute;
+    width:160px;
+    height:160px;
+    border-radius:60% 40% 70% 30%;
+    filter:blur(1px);
+    opacity:0.3;
+    z-index:0;
+  }
+  .splat.a{background:#f97316; top:40px; right:-40px; transform:rotate(-12deg);}
+  .splat.b{background:#22c55e; top:280px; left:-50px; transform:rotate(18deg);}
+  .splat.c{background:#e11d48; bottom:80px; right:10px; transform:rotate(9deg);}
+  .splat.d{background:#3b82f6; bottom:-40px; left:20px; transform:rotate(-18deg);}
+  header{
+    position:relative;
+    z-index:1;
+    border-radius:18px;
+    padding:18px 16px;
+    background:linear-gradient(135deg,#0f172a,#1e293b 45%,#f97316 120%);
+    box-shadow:0 18px 45px rgba(15,23,42,.7);
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  header h1{
+    font-size:1.6rem;
+    margin:0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  header h1 span.logo-dot{
+    width:28px;
+    height:28px;
+    border-radius:999px;
+    background:#f97316;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:0.95rem;
+  }
+  header p{
+    margin:0;
+    font-size:0.9rem;
+    color:var(--muted);
+  }
+  header .tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-top:4px;
+  }
+  .tag{
+    font-size:0.75rem;
+    padding:4px 8px;
+    border-radius:999px;
+    background:rgba(15,23,42,.7);
+    border:1px solid rgba(248,250,252,.18);
+  }
+  main{
+    margin-top:18px;
+    display:grid;
+    grid-template-columns:minmax(0,6fr) minmax(0,5fr);
+    gap:16px;
+    position:relative;
+    z-index:1;
+  }
+  @media(max-width:900px){
+    main{grid-template-columns:1fr;}
+  }
+  section{
+    border-radius:16px;
+    padding:14px 14px 16px;
+    background:rgba(15,23,42,.96);
+    box-shadow:0 14px 40px rgba(15,23,42,.8);
+    margin-bottom:14px;
+  }
+  h2{
+    font-size:1.1rem;
+    margin:0 0 6px;
+  }
+  .muted{color:var(--muted); font-size:0.85rem;}
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  @media(max-width:620px){
+    .grid{grid-template-columns:1fr;}
+  }
+  .pill-title{
+    font-size:0.8rem;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:#fecaca;
+    margin-bottom:4px;
+  }
+  .pkg-card{
+    border-radius:14px;
+    padding:10px 10px 10px;
+    background:rgba(15,23,42,0.9);
+    border:1px solid rgba(148,163,184,.6);
+  }
+  .pkg-name{
+    font-weight:600;
+    font-size:0.95rem;
+  }
+  .pkg-price{
+    font-size:0.9rem;
+    color:#f97316;
+    font-weight:600;
+  }
+  .pkg-desc{
+    font-size:0.8rem;
+    color:var(--muted);
+    margin-top:2px;
+  }
+  .badge{
+    display:inline-block;
+    margin-left:4px;
+    padding:2px 6px;
+    border-radius:999px;
+    font-size:0.7rem;
+    background:rgba(34,197,94,.18);
+    color:#bbf7d0;
+  }
+  input,select,textarea{
+    width:100%;
+    background:#020617;
+    border-radius:10px;
+    border:1px solid #1e293b;
+    color:var(--text);
+    padding:9px 10px;
+    font-size:0.9rem;
+  }
+  input::placeholder, textarea::placeholder{color:#64748b;}
+  textarea{min-height:70px; resize:vertical;}
+  .btn{
+    border:0;
+    border-radius:999px;
+    padding:9px 14px;
+    font-size:0.9rem;
+    font-weight:600;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:linear-gradient(135deg,#f97316,#facc15);
+    color:#111827;
+    box-shadow:0 10px 30px rgba(248,250,252,.35);
+  }
+  .btn:hover{transform:translateY(-1px); box-shadow:0 14px 40px rgba(248,250,252,.4);}
+  .note-box{
+    background:rgba(250,204,21,.11);
+    border:1px solid rgba(250,204,21,.7);
+    border-radius:12px;
+    padding:8px 10px;
+    font-size:0.8rem;
+    margin-bottom:8px;
+  }
+  .error{color:#fecaca;font-weight:500;margin-top:4px;font-size:0.8rem;}
+  .input-error{border-color:#f97316!important;box-shadow:0 0 0 1px rgba(249,115,22,.7);}
+  /* FAQ acordeón */
+  #faq{margin-top:10px;}
+  .faq-item{
+    border-radius:12px;
+    background:rgba(15,23,42,.9);
+    margin-top:10px;
+    border:1px solid rgba(148,163,184,.5);
+    overflow:hidden;
+  }
+  .faq-question{
+    width:100%;
+    padding:9px 11px;
+    border:0;
+    background:transparent;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    cursor:pointer;
+    font-weight:550;
+    font-size:0.9rem;
+    color:var(--text);
+  }
+  .faq-question span:first-child{max-width:90%; text-align:left;}
+  .faq-icon{font-weight:700;font-size:1.1rem;transition:transform .18s ease;}
+  .faq-answer{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .24s ease, padding .24s ease;
+    padding:0 11px;
+  }
+  .faq-answer p{font-size:0.8rem;color:var(--muted);}
+  .faq-item.open .faq-answer{max-height:260px;padding:0 11px 8px;}
+  .faq-item.open .faq-icon{transform:rotate(45deg);}
+  footer{
+    margin-top:10px;
+    text-align:center;
+    font-size:0.75rem;
+    color:#64748b;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="splat a"></div>
+  <div class="splat b"></div>
+  <div class="splat c"></div>
+  <div class="splat d"></div>
+
+  <header>
+    <h1><span class="logo-dot">🦁</span> Gotcha Leones</h1>
+    <p>Campo de gotcha y gelsoft en Ojo de Agua · Aparta tu partida con el 10% por WhatsApp.</p>
+    <div class="tags">
+      <span class="tag">🎯 Gotcha</span>
+      <span class="tag">💥 Gelsoft</span>
+      <span class="tag">🎉 Cumpleaños &amp; Eventos</span>
+      <span class="tag">📍 Ojo de Agua, Edomex</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- Columna izquierda: paquetes + FAQ -->
+    <div>
+      <section id="paquetes">
+        <h2>Paquetes</h2>
+        <p class="muted">Elige el paquete que mejor se adapte a tu equipo. Todos incluyen marcadora y CO₂ ilimitado.</p>
+        <div class="grid" style="margin-top:8px;">
+          <div>
+            <div class="pill-title">Individuales</div>
+
+            <div class="pkg-card">
+              <div class="pkg-name">Estudiante <span class="badge">Con credencial</span></div>
+              <div class="pkg-price">$100 MXN</div>
+              <div class="pkg-desc">100 cápsulas, marcadora, CO₂ ilimitado. Presentando credencial de estudiante.</div>
+            </div>
+
+            <div class="pkg-card" style="margin-top:8px;">
+              <div class="pkg-name">Cachorro</div>
+              <div class="pkg-price">$120 MXN</div>
+              <div class="pkg-desc">100 cápsulas, marcadora y CO₂ ilimitado. Ideal para empezar.</div>
+            </div>
+
+            <div class="pkg-card" style="margin-top:8px;">
+              <div class="pkg-name">Cazador</div>
+              <div class="pkg-price">$200 MXN</div>
+              <div class="pkg-desc">200 cápsulas, marcadora y CO₂ ilimitado para sesiones más largas.</div>
+            </div>
+
+            <div class="pkg-card" style="margin-top:8px;">
+              <div class="pkg-name">León</div>
+              <div class="pkg-price">$280 MXN</div>
+              <div class="pkg-desc">300 cápsulas, marcadora y CO₂ ilimitado para los que no se quieren quedar cortos.</div>
+            </div>
+
+            <div class="pkg-card" style="margin-top:8px;border-color:#22c55e;">
+              <div class="pkg-name">Gelsoft (hidrogel) <span class="badge">Recomendado peques</span></div>
+              <div class="pkg-price">$100 MXN</div>
+              <div class="pkg-desc">2 cartuchos de 350 bolitas de hidrogel, impacto más suave y equipo más ligero.</div>
+            </div>
+          </div>
+
+          <div>
+            <div class="pill-title">Grupales</div>
+
+            <div class="pkg-card">
+              <div class="pkg-name">Cachorros (grupo)</div>
+              <div class="pkg-price">$550 MXN</div>
+              <div class="pkg-desc">500 cápsulas, máximo 5 personas, marcadora y CO₂ ilimitado para todos.</div>
+            </div>
+
+            <div class="pkg-card" style="margin-top:8px;">
+              <div class="pkg-name">Cazadores (grupo)</div>
+              <div class="pkg-price">$900 MXN</div>
+              <div class="pkg-desc">1000 cápsulas, máximo 8 personas. Perfecto para equipos medianos.</div>
+            </div>
+
+            <div class="pkg-card" style="margin-top:8px;">
+              <div class="pkg-name">Leones (grupo)</div>
+              <div class="pkg-price">$1300 MXN</div>
+              <div class="pkg-desc">1500 cápsulas, máximo 10 personas. Ideal para grupos grandes.</div>
+            </div>
+
+            <div class="pkg-card" style="margin-top:8px;border-color:#f97316;">
+              <div class="pkg-name">Reyes de la selva</div>
+              <div class="pkg-price">$1700 MXN</div>
+              <div class="pkg-desc">2000 cápsulas, máximo 14 personas. Paquete especial para dominar el campo.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq">
+        <h2>Preguntas frecuentes</h2>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>1. ¿Cómo puedo hacer una reserva?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Puedes llenar el formulario de esta página o mandarnos un mensaje directo por WhatsApp. La fecha y la hora que elijas son una <strong>solicitud</strong>; te confirmaremos por WhatsApp si ese horario está disponible.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>2. ¿Cuánto debo pagar para apartar mi lugar?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>El apartado mínimo es del <strong>10% del paquete</strong> que elijas. Los datos para depósito se envían por WhatsApp después de que recibimos tu solicitud.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>3. ¿Puedo pagar el paquete completo el día del juego?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Sí. El apartado solo asegura tu lugar en el campo. El resto del pago se liquida el día del juego, antes de iniciar la partida.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>4. ¿Puedo cambiar mi horario después de reservar?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Sí, escríbenos por WhatsApp para solicitar el cambio. Los ajustes de horario dependen de la <strong>disponibilidad</strong> que tengamos ese día.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>5. ¿Qué pasa si llueve?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Con lluvia ligera se puede jugar normalmente. Si la lluvia es fuerte o el campo no es seguro, reagendamos tu visita <strong>sin costo</strong> para otra fecha disponible.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>6. ¿Qué incluye cada paquete?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Todos los paquetes incluyen marcadora, cápsulas según el paquete, CO₂ ilimitado y protecciones básicas: <strong>careta, cuellera y chaleco</strong>. Por un costo adicional puedes rentar <strong>camisa gruesa y guantes reforzados</strong> para mayor comodidad.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>7. ¿Puedo llevar mis propias cápsulas o marcadora?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Por seguridad del campo no se permiten cápsulas externas. Puedes usar tu propia marcadora siempre que el staff la revise y regule antes de jugar.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>8. ¿Qué ropa debo usar?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Recomendamos pantalón cómodo y resistente, playera o sudadera de manga larga y tenis o botas (no sandalias). También es buena idea llevar una muda de ropa extra.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>9. ¿Las cápsulas duelen?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>El impacto se siente como un ligazo fuerte, pero las protecciones reducen bastante la sensación. Si buscas algo todavía más ligero, puedes elegir la modalidad Gelsoft.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>10. ¿Pueden jugar menores de edad?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Sí, siempre que puedan sostener el peso de la marcadora y tengan consentimiento de padres o tutor. Para niñas y niños pequeños recomendamos ampliamente el <strong>paquete Gelsoft</strong>, que usa bolitas de hidrogel y equipo más ligero.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>11. ¿Puedo llevar invitados que no juegan?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Sí, pueden entrar como acompañantes. Solo pedimos que respeten las áreas marcadas y sigan las indicaciones del staff dentro del campo.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>12. ¿Hay estacionamiento?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Sí, contamos con espacio para estacionarse sin costo, sujeto a disponibilidad.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>13. ¿Cuánto dura una partida?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Aproximadamente <strong>1 hora</strong>, dependiendo del número de jugadores y de las rondas. El tiempo de juego es <strong>libre</strong> mientras tengan cápsulas disponibles.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>14. ¿Puedo llevar comida o pastel?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Sí, puedes llevar comida, botanas o pastel si vienes por cumpleaños o evento especial. Tiene un <strong>costo de $50 por persona</strong> que ingrese con alimentos externos, ya que también contamos con venta de alimentos en el campo.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>15. ¿Hay venta de más cápsulas?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Sí, puedes comprar recargas de cápsulas directamente en el campo durante tu visita.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>16. ¿Qué es el paquete Gelsoft?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Es una modalidad con bolitas de hidrogel (gelsoft) con impacto más suave. Es ideal para personas que quieren una experiencia más ligera o para peques que se están iniciando.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>17. ¿Hasta cuántas personas pueden entrar en un grupo?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Depende del paquete elegido: Cachorros hasta 5, Cazadores hasta 8, Leones hasta 10 y el paquete Reyes de la selva hasta <strong>14 personas</strong>.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>18. ¿Qué pasa si alguien del grupo no llega?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>El paquete se cobra completo, ya que las cápsulas y el equipo se preparan desde antes con base en la reserva realizada.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>19. ¿Puedo ingresar bebidas alcohólicas?</span><span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>No, no está permitido ingresar bebidas alcohólicas al campo. Dentro del lugar contamos con venta de <strong>micheladas y cervezas</strong> para que disfrutes sin problemas.</p>
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+    <!-- Columna derecha: reservas -->
+    <div>
+      <section id="reservas">
+        <h2>Reservas por WhatsApp</h2>
+        <div class="note-box">
+          <strong>Apartado mínimo del 10%</strong><br />
+          Para confirmar tu lugar, el apartado mínimo es del 10% del paquete. Los datos para depósito se enviarán por WhatsApp después de enviar tu solicitud.
+        </div>
+        <p class="muted">Llena el formulario para enviar una <strong>solicitud de reserva</strong>. La fecha y la hora quedan sujetas a confirmación por parte de Gotcha Leones.</p>
+
+        <form id="formReserva" onsubmit="event.preventDefault();enviarWhatsApp();">
+          <div class="grid" style="margin-top:8px;">
+            <div>
+              <input id="nombre" placeholder="Nombre" required />
+            </div>
+            <div>
+              <input id="telefono" placeholder="WhatsApp (10 dígitos)" required />
+            </div>
+            <div>
+              <input id="fecha" placeholder="Fecha (DD/MM/YYYY)" required />
+            </div>
+            <div>
+              <input id="hora" type="time" step="1800" required />
+            </div>
+            <div>
+              <select id="paquete" required>
+                <option value="" disabled selected>Selecciona un paquete</option>
+                <option value="Estudiante" data-price="100" data-max="1">Estudiante — $100</option>
+                <option value="Cachorro" data-price="120" data-max="1">Cachorro — $120</option>
+                <option value="Cazador" data-price="200" data-max="1">Cazador — $200</option>
+                <option value="León" data-price="280" data-max="1">León — $280</option>
+                <option value="Gelsoft" data-price="100" data-max="1">Gelsoft — $100</option>
+                <option value="Cachorros (grupo)" data-price="550" data-max="5">Cachorros (grupo) — $550</option>
+                <option value="Cazadores (grupo)" data-price="900" data-max="8">Cazadores (grupo) — $900</option>
+                <option value="Leones (grupo)" data-price="1300" data-max="10">Leones (grupo) — $1300</option>
+                <option value="Reyes de la selva" data-price="1700" data-max="14">Reyes de la selva — $1700</option>
+              </select>
+            </div>
+            <div>
+              <input id="jugadores" type="number" min="1" placeholder="Número de jugadores" />
+            </div>
+          </div>
+
+          <div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+            <input id="apartado" type="checkbox" />
+            <label for="apartado" class="muted" style="font-size:0.8rem;">Quiero apartar con el 10%</label>
+          </div>
+
+          <textarea id="notas" placeholder="Comentarios: cumpleaños, empresa, horario preferente, etc." style="margin-top:8px;"></textarea>
+
+          <div style="margin-top:10px;display:flex;justify-content:flex-end;">
+            <button class="btn">Enviar solicitud por WhatsApp</button>
+          </div>
+          <div id="msgError" class="error"></div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    Gotcha Leones · Reservaciones por WhatsApp · Número: 55 2968 9977
+  </footer>
+</div>
+
+<script>
+  // acordeón FAQ
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.parentElement;
+      const answer = item.querySelector('.faq-answer');
+      const open = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => {
+        i.classList.remove('open');
+        i.querySelector('.faq-answer').classList.remove('open');
+      });
+      if (!open) {
+        item.classList.add('open');
+        answer.classList.add('open');
+      }
+    });
+  });
+
+  function parseFecha(fechaStr){
+    if(!fechaStr) return "";
+    fechaStr = fechaStr.trim();
+    // formato DD/MM/YYYY
+    const m = fechaStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if(m){
+      const dd = m[1].padStart(2,"0");
+      const mm = m[2].padStart(2,"0");
+      const yyyy = m[3];
+      return `${dd}/${mm}/${yyyy}`;
+    }
+    return fechaStr; // si ya escribe algo tipo 01-01-2025, se manda tal cual en el mensaje
+  }
+
+  function enviarWhatsApp(){
+    const msgError = document.getElementById('msgError');
+    msgError.textContent = "";
+    const nombre = document.getElementById('nombre').value.trim();
+    const telRaw = document.getElementById('telefono').value;
+    const telefono = telRaw.replace(/[^0-9]/g,'');
+    const fechaRaw = document.getElementById('fecha').value;
+    const fecha = parseFecha(fechaRaw);
+    const hora = document.getElementById('hora').value;
+    const paqueteSelect = document.getElementById('paquete');
+    const paquete = paqueteSelect.value;
+    const price = paqueteSelect.selectedIndex > 0 ? paqueteSelect.options[paqueteSelect.selectedIndex].dataset.price : "";
+    const jugadores = document.getElementById('jugadores').value || "-";
+    const notas = (document.getElementById('notas').value || "-").trim();
+    const apartado = document.getElementById('apartado').checked;
+
+    // Validaciones básicas
+    if(!nombre){ msgError.textContent = "Por favor escribe tu nombre."; return; }
+    if(telefono.length < 10){ msgError.textContent = "Ingresa un número de WhatsApp válido (10 dígitos)."; return; }
+    if(!fecha){ msgError.textContent = "Ingresa una fecha en formato DD/MM/YYYY."; return; }
+    if(!hora){ msgError.textContent = "Selecciona una hora aproximada."; return; }
+    if(!paquete){ msgError.textContent = "Selecciona un paquete."; return; }
+
+    let apartadoText = "No solicitaré apartado por ahora.";
+    if(apartado && price){
+      const apartadoMonto = Math.round(parseFloat(price) * 0.10);
+      apartadoText = `Solicito apartado del 10%: $${apartadoMonto} MXN. En espera de datos para depósito.`;
+    }
+
+    const msg = `📅 *Solicitud de reserva Gotcha Leones*`
+      + `%0A*Nombre:* ${nombre}`
+      + `%0A*WhatsApp:* ${telefono}`
+      + `%0A*Fecha solicitada:* ${fecha}`
+      + `%0A*Hora aproximada:* ${hora}`
+      + `%0A*Paquete:* ${paquete} — $${price || "?"} MXN`
+      + `%0A*Jugadores:* ${jugadores}`
+      + `%0A*Apartado:* ${apartadoText}`
+      + `%0A*Comentarios:* ${notas}`
+      + `%0A%0A*Nota:* Entiendo que la fecha y hora quedan sujetas a confirmación.`;
+
+    const waNumber = "525529689977"; // 52 México + 5529689977
+    const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
+    window.open(url,"_blank");
+  }
+</script>
+</body>
+</html>
